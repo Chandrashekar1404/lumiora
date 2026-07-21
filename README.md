@@ -162,3 +162,23 @@ License information will be added before the first public release.
 **Lumiora © 2026**
 
 </div>
+
+
+## 🚧 Sprint Progress
+
+### Sprint 0 ✅
+
+- Product Planning
+- Architecture
+- Documentation
+- Database Design
+
+### Sprint 1 🚀
+
+- [x] Spring Boot Initialization
+- [x] Enterprise Package Structure
+- [x] BaseEntity
+- [x] ApiResponse
+- [ ] Global Exception Handling
+- [ ] User Management
+- [ ] Authentication
