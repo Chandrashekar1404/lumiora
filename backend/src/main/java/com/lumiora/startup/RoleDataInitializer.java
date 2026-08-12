@@ -1,15 +1,20 @@
 package com.lumiora.startup;
 
-import com.lumiora.common.constants.RoleConstants;
-import com.lumiora.entity.auth.Role;
-import com.lumiora.service.RoleService;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import com.lumiora.common.constants.RoleConstants;
+import com.lumiora.entity.auth.Role;
+import com.lumiora.service.RoleService;
+
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.core.annotation.Order;
 
 @Component
+@Order(1)
 @RequiredArgsConstructor
 public class RoleDataInitializer implements CommandLineRunner {
 
