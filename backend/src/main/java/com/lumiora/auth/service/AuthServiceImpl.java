@@ -8,6 +8,7 @@ import com.lumiora.auth.dto.LoginRequest;
 import com.lumiora.auth.dto.LoginResponse;
 import com.lumiora.entity.auth.User;
 import com.lumiora.repository.UserRepository;
+import com.lumiora.security.JwtService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,6 +18,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final JwtService jwtService;
 
     @Override
     public LoginResponse login(LoginRequest request) {
@@ -33,8 +35,13 @@ public class AuthServiceImpl implements AuthService {
                         new IllegalStateException("User not found")
                 );
 
+        String token = jwtService.generateToken(
+                user.getEmail(),
+                user.getRole().getName()
+        );
+
         return new LoginResponse(
-                null,
+                token,
                 "Bearer",
                 user.getEmail(),
                 user.getRole().getName()
