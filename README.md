@@ -182,3 +182,44 @@ License information will be added before the first public release.
 - [ ] Global Exception Handling
 - [ ] User Management
 - [ ] Authentication
+
+
+## 🔐 Authentication Foundation
+
+### Role Management
+
+Lumiora uses database-driven roles instead of hard-coded Java enums.
+
+#### Default Roles
+
+- SUPER_ADMIN
+- ADMIN
+- TRAINER
+- STUDENT
+- COUNSELOR
+- ACCOUNTANT
+
+#### Role Initialization
+
+On application startup, `RoleDataInitializer` checks whether each default role already exists.
+
+If a role does not exist, Lumiora creates it automatically.
+
+If the role already exists, it skips creation.
+
+This makes the initialization process idempotent and prevents duplicate role records.
+
+### Architecture
+
+```text
+Application Startup
+        ↓
+RoleDataInitializer
+        ↓
+RoleService
+        ↓
+RoleRepository
+        ↓
+MySQL
+        ↓
+roles table
