@@ -15,4 +15,20 @@ public class TestController {
         return "Hello " + authentication.getName()
                 + "! You are authenticated.";
     }
+
+    
+    @GetMapping("/admin")
+    public String adminEndpoint(Authentication authentication) {
+
+        return "Hello " + authentication.getName()
+                + "! You have ADMIN access.";
+    }
+
+
+    @GetMapping("/student")
+    public String studentEndpoint(Authentication authentication) {
+
+        return "Hello " + authentication.getName()
+                + "! You have STUDENT access.";
+    }
 }
