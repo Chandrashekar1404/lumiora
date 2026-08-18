@@ -1,22 +1,26 @@
 package com.lumiora.config;
 
-import com.lumiora.security.JwtAuthenticationFilter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-
 import com.lumiora.security.CustomUserDetailsService;
+import com.lumiora.security.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 
 @Configuration
 @EnableWebSecurity
@@ -24,8 +28,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
+
     private final PasswordEncoder passwordEncoder;
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -38,36 +45,67 @@ public class SecurityConfig {
         return provider;
     }
 
-        @Bean
+
+    @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http) throws Exception {
 
         http
+
                 .csrf(csrf -> csrf.disable())
+
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS
                         )
                 )
+
                 .authenticationProvider(authenticationProvider())
+
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
                 )
+
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/auth/**").permitAll()
-            
-                    .requestMatchers("/api/test/admin")
-                    .hasAnyRole("SUPER_ADMIN", "ADMIN")
-            
-                    .requestMatchers("/api/test/student")
-                    .hasRole("STUDENT")
-            
-                    .anyRequest().authenticated()
+
+                        // ==========================
+                        // AUTHENTICATION
+                        // ==========================
+                        .requestMatchers("/api/auth/**")
+                        .permitAll()
+
+
+                        // ==========================
+                        // USER MANAGEMENT
+                        // ==========================
+                        .requestMatchers("/api/users")
+                        .hasAnyRole("SUPER_ADMIN", "ADMIN")
+
+                        .requestMatchers("/api/users/**")
+                        .hasAnyRole("SUPER_ADMIN", "ADMIN")
+
+
+                        // ==========================
+                        // TEST ENDPOINTS
+                        // ==========================
+                        .requestMatchers("/api/test/admin")
+                        .hasAnyRole("SUPER_ADMIN", "ADMIN")
+
+                        .requestMatchers("/api/test/student")
+                        .hasRole("STUDENT")
+
+
+                        // ==========================
+                        // EVERYTHING ELSE
+                        // ==========================
+                        .anyRequest()
+                        .authenticated()
                 );
 
         return http.build();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(

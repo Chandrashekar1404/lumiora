@@ -11,6 +11,8 @@ import com.lumiora.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import com.lumiora.entity.auth.UserStatus;
+
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -27,6 +29,12 @@ public class CustomUserDetailsService implements UserDetailsService {
                                 "User not found with email: " + email
                         )
                 );
+
+                if (user.getStatus() != UserStatus.ACTIVE) {
+                        throw new UsernameNotFoundException(
+                                "User account is not active"
+                        );
+                    }
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())

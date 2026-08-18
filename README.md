@@ -223,3 +223,51 @@ RoleRepository
 MySQL
         ↓
 roles table
+
+
+## 👤 User Management
+
+Lumiora now includes a complete User Management module secured with JWT authentication and role-based authorization.
+
+### Features
+
+- Create users
+- View all users
+- View individual users
+- Update user details
+- Deactivate users using `INACTIVE` status
+- Validate request data
+- Prevent duplicate email registration
+- Protect user APIs using role-based authorization
+- Never expose passwords through API responses
+- Standardize API responses using `ApiResponse`
+
+### User API
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/users` | Create a user |
+| GET | `/api/users` | Get all users |
+| GET | `/api/users/{id}` | Get a user |
+| PUT | `/api/users/{id}` | Update a user |
+| DELETE | `/api/users/{id}` | Deactivate a user |
+
+### Authorization
+
+User management APIs are currently restricted to:
+
+- `SUPER_ADMIN`
+- `ADMIN`
+
+Students and other non-administrative roles cannot access user-management endpoints.
+
+### User Lifecycle
+
+```text
+User Created
+     ↓
+ACTIVE
+     ↓
+Deactivate
+     ↓
+INACTIVE
