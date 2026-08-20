@@ -96,6 +96,10 @@ public class SecurityConfig {
                         .hasRole("STUDENT")
 
 
+                        .requestMatchers("/api/organizations/**")
+                        .hasRole("SUPER_ADMIN")
+
+
                         // ==========================
                         // EVERYTHING ELSE
                         // ==========================
