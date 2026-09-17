@@ -21,7 +21,7 @@ public class ApiResponse<T> {
         return new ApiResponse<>(true, message, data);
     }
 
-    public static ApiResponse<Void> failure(String message) {
-        return new ApiResponse<>(false, message, null);
-    }
+    public static <T> ApiResponse<T> failure(String message) {
+    return new ApiResponse<>(false, message, null);
+}
 }

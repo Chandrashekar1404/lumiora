@@ -23,4 +23,6 @@ public class UserResponse {
     private String role;
 
     private UserStatus status;
+
+    private Long organizationId;
 }

@@ -1,6 +1,8 @@
 package com.lumiora.entity.auth;
 
 import com.lumiora.entity.base.BaseEntity;
+import com.lumiora.organization.entity.Organization;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -37,6 +39,10 @@ public class User extends BaseEntity {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organization_id")
+    private Organization organization;
+
     public User() {
     }
 
@@ -51,7 +57,7 @@ public class User extends BaseEntity {
     public String getPhone() {
         return phone;
     }
-    
+
     public void setPhone(String phone) {
         this.phone = phone;
     }
@@ -94,5 +100,13 @@ public class User extends BaseEntity {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
     }
 }

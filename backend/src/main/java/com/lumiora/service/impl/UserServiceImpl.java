@@ -10,6 +10,11 @@ import java.util.Optional;
 
 import java.util.List;
 
+import java.util.List;
+import java.util.Optional;
+
+import com.lumiora.entity.auth.User;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -31,7 +36,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email);
     }
 
-        @Override
+    @Override
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
@@ -50,4 +55,21 @@ public class UserServiceImpl implements UserService {
     public void deleteById(Long id) {
         userRepository.deleteById(id);
     }
+
+    @Override
+    public List<User> findAllByOrganizationId(Long organizationId) {
+        return userRepository.findAllByOrganization_Id(organizationId);
+    }
+
+    @Override
+    public Optional<User> findByIdAndOrganizationId(
+            Long id,
+            Long organizationId) {
+
+        return userRepository.findByIdAndOrganization_Id(
+                id,
+                organizationId);
+    }
+
+
 }

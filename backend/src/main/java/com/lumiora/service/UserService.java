@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.lumiora.entity.auth.User;
 
+
 public interface UserService {
 
     User save(User user);
@@ -20,4 +21,8 @@ public interface UserService {
     User update(User user);
 
     void deleteById(Long id);
+
+    List<User> findAllByOrganizationId(Long organizationId);
+
+    Optional<User> findByIdAndOrganizationId(Long id, Long organizationId);
 }

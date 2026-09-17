@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -29,4 +30,7 @@ public class UserCreateRequest {
 
     @NotBlank(message = "Role is required")
     private String role;
+
+    @NotNull(message = "Organization ID is required")
+    private Long organizationId;
 }
