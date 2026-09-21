@@ -21,101 +21,78 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomUserDetailsService userDetailsService;
+        private final CustomUserDetailsService userDetailsService;
 
-    private final PasswordEncoder passwordEncoder;
+        private final PasswordEncoder passwordEncoder;
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+        @Bean
+        public AuthenticationProvider authenticationProvider() {
 
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
+                DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
 
-        DaoAuthenticationProvider provider =
-                new DaoAuthenticationProvider(userDetailsService);
+                provider.setPasswordEncoder(passwordEncoder);
 
-        provider.setPasswordEncoder(passwordEncoder);
+                return provider;
+        }
 
-        return provider;
-    }
+        @Bean
+        public SecurityFilterChain securityFilterChain(
+                        HttpSecurity http) throws Exception {
 
+                http
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http) throws Exception {
+                                .csrf(csrf -> csrf.disable())
 
-        http
+                                .sessionManagement(session -> session.sessionCreationPolicy(
+                                                SessionCreationPolicy.STATELESS))
 
-                .csrf(csrf -> csrf.disable())
+                                .authenticationProvider(authenticationProvider())
 
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS
-                        )
-                )
+                                .addFilterBefore(
+                                                jwtAuthenticationFilter,
+                                                UsernamePasswordAuthenticationFilter.class)
 
-                .authenticationProvider(authenticationProvider())
+                                .authorizeHttpRequests(auth -> auth
 
-                .addFilterBefore(
-                        jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                )
+                                                .requestMatchers("/api/auth/**")
+                                                .permitAll()
 
-                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/api/users")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN")
 
-                        // ==========================
-                        // AUTHENTICATION
-                        // ==========================
-                        .requestMatchers("/api/auth/**")
-                        .permitAll()
+                                                .requestMatchers("/api/users/**")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN")
 
+                                                .requestMatchers("/api/organizations/**")
+                                                .hasRole("SUPER_ADMIN")
 
-                        // ==========================
-                        // USER MANAGEMENT
-                        // ==========================
-                        .requestMatchers("/api/users")
-                        .hasAnyRole("SUPER_ADMIN", "ADMIN")
+                                                .requestMatchers("/api/courses/**")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN")
 
-                        .requestMatchers("/api/users/**")
-                        .hasAnyRole("SUPER_ADMIN", "ADMIN")
+                                                .requestMatchers("/api/test/admin")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN")
 
+                                                .requestMatchers("/api/test/student")
+                                                .hasRole("STUDENT")
 
-                        // ==========================
-                        // TEST ENDPOINTS
-                        // ==========================
-                        .requestMatchers("/api/test/admin")
-                        .hasAnyRole("SUPER_ADMIN", "ADMIN")
+                                                .anyRequest()
+                                                .authenticated());
 
-                        .requestMatchers("/api/test/student")
-                        .hasRole("STUDENT")
+                return http.build();
+        }
 
+        @Bean
+        public AuthenticationManager authenticationManager(
+                        org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration configuration)
+                        throws Exception {
 
-                        .requestMatchers("/api/organizations/**")
-                        .hasRole("SUPER_ADMIN")
-
-
-                        // ==========================
-                        // EVERYTHING ELSE
-                        // ==========================
-                        .anyRequest()
-                        .authenticated()
-                );
-
-        return http.build();
-    }
-
-
-    @Bean
-    public AuthenticationManager authenticationManager(
-            org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration configuration)
-            throws Exception {
-
-        return configuration.getAuthenticationManager();
-    }
+                return configuration.getAuthenticationManager();
+        }
 }
