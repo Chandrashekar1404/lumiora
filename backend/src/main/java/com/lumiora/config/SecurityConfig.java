@@ -100,6 +100,9 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/payments/**")
                                                 .hasAnyRole("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
 
+                                                .requestMatchers("/api/leads/**")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN", "COUNSELOR")
+
                                                 .anyRequest()
                                                 .authenticated());
 
