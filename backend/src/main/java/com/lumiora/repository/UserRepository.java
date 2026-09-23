@@ -1,10 +1,11 @@
 package com.lumiora.repository;
 
-import com.lumiora.entity.auth.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.lumiora.entity.auth.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -14,10 +15,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByPhone(String phone);
 
-    List<User> findAllByOrganization_Id(Long organizationId);
+    List<User> findAllByOrganization_Id(
+            Long organizationId
+    );
 
     Optional<User> findByIdAndOrganization_Id(
             Long id,
             Long organizationId
+    );
+
+    List<User> findAllByRole_Name(
+            String roleName
+    );
+
+    List<User> findAllByOrganization_IdAndRole_Name(
+            Long organizationId,
+            String roleName
     );
 }

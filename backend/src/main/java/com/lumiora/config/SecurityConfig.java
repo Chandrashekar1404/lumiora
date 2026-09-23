@@ -103,6 +103,9 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/leads/**")
                                                 .hasAnyRole("SUPER_ADMIN", "ADMIN", "COUNSELOR")
 
+                                                .requestMatchers("/api/students/**")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN", "STUDENT")
+
                                                 .anyRequest()
                                                 .authenticated());
 
