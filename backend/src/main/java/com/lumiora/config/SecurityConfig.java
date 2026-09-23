@@ -118,6 +118,9 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/dashboard")
                                                 .hasAnyRole("SUPER_ADMIN", "ADMIN")
 
+                                                .requestMatchers("/api/reports/**")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
+
                                                 .anyRequest()
                                                 .authenticated());
 
