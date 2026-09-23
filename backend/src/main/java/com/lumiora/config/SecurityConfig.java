@@ -112,6 +112,12 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/accountants/**")
                                                 .hasAnyRole("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
 
+                                                .requestMatchers("/api/dashboard/finance")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
+
+                                                .requestMatchers("/api/dashboard")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN")
+
                                                 .anyRequest()
                                                 .authenticated());
 
