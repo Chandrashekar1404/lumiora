@@ -74,4 +74,13 @@ public interface AttendanceRepository
         List<Attendance> findAllByOrganization_IdAndStudent_Id(
                         Long organizationId,
                         Long studentId);
+
+        @EntityGraph(attributePaths = {
+                        "organization",
+                        "batch",
+                        "student"
+        })
+        List<Attendance> findAllByOrganization_IdAndBatch_Trainer_Id(
+                        Long organizationId,
+                        Long trainerId);
 }
