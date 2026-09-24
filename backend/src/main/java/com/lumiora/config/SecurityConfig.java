@@ -21,6 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import org.springframework.http.HttpMethod;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -120,6 +122,21 @@ public class SecurityConfig {
 
                                                 .requestMatchers("/api/reports/**")
                                                 .hasAnyRole("SUPER_ADMIN", "ADMIN", "ACCOUNTANT")
+
+                                                .requestMatchers(
+                                                                HttpMethod.POST,
+                                                                "/api/notifications",
+                                                                "/api/notifications/broadcast")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN")
+
+                                                .requestMatchers(
+                                                                HttpMethod.DELETE,
+                                                                "/api/notifications/**")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN")
+
+                                                .requestMatchers(
+                                                                "/api/notifications/**")
+                                                .authenticated()
 
                                                 .anyRequest()
                                                 .authenticated());
