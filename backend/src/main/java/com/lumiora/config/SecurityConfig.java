@@ -157,6 +157,38 @@ public class SecurityConfig {
                                                                 "/api/timetable/**")
                                                 .authenticated()
 
+                                                .requestMatchers(
+                                                                org.springframework.http.HttpMethod.POST,
+                                                                "/api/exams",
+                                                                "/api/results/exam/**")
+                                                .hasAnyRole(
+                                                                "SUPER_ADMIN",
+                                                                "ADMIN",
+                                                                "TRAINER")
+
+                                                .requestMatchers(
+                                                                org.springframework.http.HttpMethod.PUT,
+                                                                "/api/exams/**",
+                                                                "/api/results/**")
+                                                .hasAnyRole(
+                                                                "SUPER_ADMIN",
+                                                                "ADMIN",
+                                                                "TRAINER")
+
+                                                .requestMatchers(
+                                                                org.springframework.http.HttpMethod.DELETE,
+                                                                "/api/exams/**",
+                                                                "/api/results/**")
+                                                .hasAnyRole(
+                                                                "SUPER_ADMIN",
+                                                                "ADMIN",
+                                                                "TRAINER")
+
+                                                .requestMatchers(
+                                                                "/api/exams/**",
+                                                                "/api/results/**")
+                                                .authenticated()
+
                                                 .anyRequest()
                                                 .authenticated());
 
