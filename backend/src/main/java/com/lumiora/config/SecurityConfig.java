@@ -138,6 +138,25 @@ public class SecurityConfig {
                                                                 "/api/notifications/**")
                                                 .authenticated()
 
+                                                .requestMatchers(
+                                                                org.springframework.http.HttpMethod.POST,
+                                                                "/api/timetable")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN")
+
+                                                .requestMatchers(
+                                                                org.springframework.http.HttpMethod.PUT,
+                                                                "/api/timetable/**")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN")
+
+                                                .requestMatchers(
+                                                                org.springframework.http.HttpMethod.DELETE,
+                                                                "/api/timetable/**")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN")
+
+                                                .requestMatchers(
+                                                                "/api/timetable/**")
+                                                .authenticated()
+
                                                 .anyRequest()
                                                 .authenticated());
 
