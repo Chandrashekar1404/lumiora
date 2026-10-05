@@ -189,6 +189,49 @@ public class SecurityConfig {
                                                                 "/api/results/**")
                                                 .authenticated()
 
+
+                                                .requestMatchers(
+                                                HttpMethod.POST,
+                                                "/api/assignments"
+                                                )
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN", "TRAINER")
+
+                                                .requestMatchers(
+                                                HttpMethod.PUT,
+                                                "/api/assignments/**"
+                                                )
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN", "TRAINER")
+
+                                                .requestMatchers(
+                                                HttpMethod.DELETE,
+                                                "/api/assignments/**"
+                                                )
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN", "TRAINER")
+
+                                                .requestMatchers(
+                                                HttpMethod.POST,
+                                                "/api/assignment-submissions/**"
+                                                )
+                                                .hasRole("STUDENT")
+
+                                                .requestMatchers(
+                                                HttpMethod.PUT,
+                                                "/api/assignment-submissions/*/resubmit"
+                                                )
+                                                .hasRole("STUDENT")
+
+                                                .requestMatchers(
+                                                HttpMethod.PUT,
+                                                "/api/assignment-submissions/*/grade"
+                                                )
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN", "TRAINER")
+
+                                                .requestMatchers(
+                                                "/api/assignments/**",
+                                                "/api/assignment-submissions/**"
+                                                )
+                                                .authenticated()
+
                                                 .anyRequest()
                                                 .authenticated());
 
