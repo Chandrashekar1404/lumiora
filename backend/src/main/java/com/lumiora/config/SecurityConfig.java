@@ -232,6 +232,34 @@ public class SecurityConfig {
                                                 )
                                                 .authenticated()
 
+
+                                                .requestMatchers(
+                                                        HttpMethod.POST,
+                                                        "/api/certificates"
+                                                )
+                                                .hasAnyRole(
+                                                        "SUPER_ADMIN",
+                                                        "ADMIN"
+                                                )
+
+                                                .requestMatchers(
+                                                        HttpMethod.PUT,
+                                                        "/api/certificates/**"
+                                                )
+                                                .hasAnyRole(
+                                                        "SUPER_ADMIN",
+                                                        "ADMIN"
+                                                )
+
+                                                .requestMatchers(
+                                                        HttpMethod.DELETE,
+                                                        "/api/certificates/**"
+                                                )
+                                                .hasAnyRole(
+                                                        "SUPER_ADMIN",
+                                                        "ADMIN"
+                                                )
+
                                                 .anyRequest()
                                                 .authenticated());
 
