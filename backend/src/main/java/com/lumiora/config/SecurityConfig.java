@@ -189,76 +189,78 @@ public class SecurityConfig {
                                                                 "/api/results/**")
                                                 .authenticated()
 
-
                                                 .requestMatchers(
-                                                HttpMethod.POST,
-                                                "/api/assignments"
-                                                )
+                                                                HttpMethod.POST,
+                                                                "/api/assignments")
                                                 .hasAnyRole("SUPER_ADMIN", "ADMIN", "TRAINER")
 
                                                 .requestMatchers(
-                                                HttpMethod.PUT,
-                                                "/api/assignments/**"
-                                                )
+                                                                HttpMethod.PUT,
+                                                                "/api/assignments/**")
                                                 .hasAnyRole("SUPER_ADMIN", "ADMIN", "TRAINER")
 
                                                 .requestMatchers(
-                                                HttpMethod.DELETE,
-                                                "/api/assignments/**"
-                                                )
+                                                                HttpMethod.DELETE,
+                                                                "/api/assignments/**")
                                                 .hasAnyRole("SUPER_ADMIN", "ADMIN", "TRAINER")
 
                                                 .requestMatchers(
-                                                HttpMethod.POST,
-                                                "/api/assignment-submissions/**"
-                                                )
+                                                                HttpMethod.POST,
+                                                                "/api/assignment-submissions/**")
                                                 .hasRole("STUDENT")
 
                                                 .requestMatchers(
-                                                HttpMethod.PUT,
-                                                "/api/assignment-submissions/*/resubmit"
-                                                )
+                                                                HttpMethod.PUT,
+                                                                "/api/assignment-submissions/*/resubmit")
                                                 .hasRole("STUDENT")
 
                                                 .requestMatchers(
-                                                HttpMethod.PUT,
-                                                "/api/assignment-submissions/*/grade"
-                                                )
+                                                                HttpMethod.PUT,
+                                                                "/api/assignment-submissions/*/grade")
                                                 .hasAnyRole("SUPER_ADMIN", "ADMIN", "TRAINER")
 
                                                 .requestMatchers(
-                                                "/api/assignments/**",
-                                                "/api/assignment-submissions/**"
-                                                )
+                                                                "/api/assignments/**",
+                                                                "/api/assignment-submissions/**")
                                                 .authenticated()
 
+                                                .requestMatchers(
+                                                                HttpMethod.POST,
+                                                                "/api/certificates")
+                                                .hasAnyRole(
+                                                                "SUPER_ADMIN",
+                                                                "ADMIN")
 
                                                 .requestMatchers(
-                                                        HttpMethod.POST,
-                                                        "/api/certificates"
-                                                )
+                                                                HttpMethod.PUT,
+                                                                "/api/certificates/**")
                                                 .hasAnyRole(
-                                                        "SUPER_ADMIN",
-                                                        "ADMIN"
-                                                )
+                                                                "SUPER_ADMIN",
+                                                                "ADMIN")
 
                                                 .requestMatchers(
-                                                        HttpMethod.PUT,
-                                                        "/api/certificates/**"
-                                                )
+                                                                HttpMethod.DELETE,
+                                                                "/api/certificates/**")
                                                 .hasAnyRole(
-                                                        "SUPER_ADMIN",
-                                                        "ADMIN"
-                                                )
+                                                                "SUPER_ADMIN",
+                                                                "ADMIN")
 
                                                 .requestMatchers(
-                                                        HttpMethod.DELETE,
-                                                        "/api/certificates/**"
-                                                )
-                                                .hasAnyRole(
-                                                        "SUPER_ADMIN",
-                                                        "ADMIN"
-                                                )
+                                                                org.springframework.http.HttpMethod.POST,
+                                                                "/api/materials")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN", "TRAINER")
+
+                                                .requestMatchers(
+                                                                org.springframework.http.HttpMethod.PUT,
+                                                                "/api/materials/**")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN", "TRAINER")
+
+                                                .requestMatchers(
+                                                                org.springframework.http.HttpMethod.DELETE,
+                                                                "/api/materials/**")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN", "TRAINER")
+
+                                                .requestMatchers("/api/materials/**").authenticated()
 
                                                 .anyRequest()
                                                 .authenticated());
