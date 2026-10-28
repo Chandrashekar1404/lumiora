@@ -262,6 +262,26 @@ public class SecurityConfig {
 
                                                 .requestMatchers("/api/materials/**").authenticated()
 
+                                                .requestMatchers(
+                                                                org.springframework.http.HttpMethod.POST,
+                                                                "/api/documents")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN", "TRAINER", "STUDENT")
+
+                                                .requestMatchers(
+                                                                org.springframework.http.HttpMethod.PUT,
+                                                                "/api/documents/**")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN", "TRAINER")
+
+                                                .requestMatchers(
+                                                                org.springframework.http.HttpMethod.DELETE,
+                                                                "/api/documents/**")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN", "TRAINER")
+
+                                                .requestMatchers("/api/documents/**").authenticated()
+
+                                                .requestMatchers("/api/audit-logs/**")
+                                                .hasAnyRole("SUPER_ADMIN", "ADMIN")
+
                                                 .anyRequest()
                                                 .authenticated());
 
