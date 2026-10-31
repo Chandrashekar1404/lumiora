@@ -8,6 +8,10 @@ import com.lumiora.entity.auth.User;
 import com.lumiora.organization.entity.Organization;
 import com.lumiora.organization.repository.OrganizationRepository;
 import com.lumiora.repository.UserRepository;
+
+import com.lumiora.audit.entity.AuditAction;
+import com.lumiora.audit.service.AuditService;
+
 import jakarta.transaction.Transactional;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -32,16 +36,20 @@ public class DocumentService {
     private final UserRepository userRepository;
     private final OrganizationRepository organizationRepository;
     private final DocumentStorageService storageService;
+    private final AuditService auditService;
 
     public DocumentService(
             DocumentRepository documentRepository,
             UserRepository userRepository,
             OrganizationRepository organizationRepository,
-            DocumentStorageService storageService) {
+            DocumentStorageService storageService,
+            AuditService auditService) {
+
         this.documentRepository = documentRepository;
         this.userRepository = userRepository;
         this.organizationRepository = organizationRepository;
         this.storageService = storageService;
+        this.auditService = auditService;
     }
 
     @Transactional
@@ -64,8 +72,7 @@ public class DocumentService {
         validateTitle(title);
         validateFile(file);
 
-        Organization organization =
-                resolveOrganization(actor, organizationId);
+        Organization organization = resolveOrganization(actor, organizationId);
 
         User owner = resolveOwner(actor, role, ownerUserId, organization);
 
@@ -78,7 +85,8 @@ public class DocumentService {
             document.setTitle(title.trim());
             document.setDescription(normalizeDescription(description));
             document.setCategory(category == null
-                    ? DocumentCategory.OTHER : category);
+                    ? DocumentCategory.OTHER
+                    : category);
             document.setOriginalFilename(safeOriginalFilename(
                     file.getOriginalFilename()));
             document.setContentType(detectContentType(file));
@@ -90,6 +98,16 @@ public class DocumentService {
             document.setUploadedBy(actor);
 
             Document saved = documentRepository.save(document);
+
+            auditService.record(
+                    actor.getId(),
+                    actor.getEmail(),
+                    AuditAction.UPLOAD,
+                    "Document",
+                    saved.getId(),
+                    organization.getId(),
+                    "Document uploaded");
+
             return toResponse(saved);
 
         } catch (IOException | RuntimeException exception) {
@@ -124,7 +142,7 @@ public class DocumentService {
 
         switch (role) {
             case "SUPER_ADMIN" ->
-                    documents = documentRepository.findAllByActiveTrue();
+                documents = documentRepository.findAllByActiveTrue();
 
             case "ADMIN", "TRAINER" -> {
                 Long orgId = organizationIdOf(actor);
@@ -133,8 +151,8 @@ public class DocumentService {
             }
 
             case "STUDENT" ->
-                    documents = documentRepository
-                            .findAllByOwnerUser_IdAndActiveTrue(actor.getId());
+                documents = documentRepository
+                        .findAllByOwnerUser_IdAndActiveTrue(actor.getId());
 
             default -> throw forbidden(
                     "You are not allowed to view documents");
@@ -188,7 +206,18 @@ public class DocumentService {
         assertCanRead(actor, document);
 
         try {
-            return storageService.load(document.getStorageKey());
+            Resource resource = storageService.load(document.getStorageKey());
+
+            auditService.record(
+                    actor.getId(),
+                    actor.getEmail(),
+                    AuditAction.DOWNLOAD,
+                    "Document",
+                    document.getId(),
+                    document.getOrganization().getId(),
+                    "Document download requested");
+
+            return resource;
         } catch (IOException exception) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Document file not found");
@@ -215,7 +244,18 @@ public class DocumentService {
             document.setCategory(category);
         }
 
-        return toResponse(documentRepository.save(document));
+        Document saved = documentRepository.save(document);
+
+        auditService.record(
+                actor.getId(),
+                actor.getEmail(),
+                AuditAction.UPDATE,
+                "Document",
+                saved.getId(),
+                saved.getOrganization().getId(),
+                "Document metadata updated");
+
+        return toResponse(saved);
     }
 
     @Transactional
@@ -226,7 +266,16 @@ public class DocumentService {
 
         // Soft delete: metadata is hidden; the physical file is retained.
         document.setActive(false);
-        documentRepository.save(document);
+        Document saved = documentRepository.save(document);
+
+        auditService.record(
+                actor.getId(),
+                actor.getEmail(),
+                AuditAction.DELETE,
+                "Document",
+                saved.getId(),
+                saved.getOrganization().getId(),
+                "Document soft-deleted");
     }
 
     private void validateFile(MultipartFile file) {
@@ -255,12 +304,12 @@ public class DocumentService {
 
             boolean valid = switch (actualType) {
                 case "application/pdf" ->
-                        filename.endsWith(".pdf");
+                    filename.endsWith(".pdf");
                 case "image/jpeg" ->
-                        filename.endsWith(".jpg")
-                                || filename.endsWith(".jpeg");
+                    filename.endsWith(".jpg")
+                            || filename.endsWith(".jpeg");
                 case "image/png" ->
-                        filename.endsWith(".png");
+                    filename.endsWith(".png");
                 default -> false;
             };
 
@@ -429,12 +478,12 @@ public class DocumentService {
 
     private Long organizationIdOf(User user) {
         return user.getOrganization() == null
-                ? null : user.getOrganization().getId();
+                ? null
+                : user.getOrganization().getId();
     }
 
     private User currentUser() {
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()
                 || authentication.getName() == null) {
@@ -512,11 +561,9 @@ public class DocumentService {
                 document.isActive(),
                 document.getOrganization().getId(),
                 owner == null ? null : owner.getId(),
-                owner == null ? null :
-                        (owner.getFirstName() + " " + owner.getLastName()).trim(),
+                owner == null ? null : (owner.getFirstName() + " " + owner.getLastName()).trim(),
                 uploader.getId(),
-                (uploader.getFirstName() + " " + uploader.getLastName()).trim()
-        );
+                (uploader.getFirstName() + " " + uploader.getLastName()).trim());
     }
 
     private ResponseStatusException badRequest(String message) {

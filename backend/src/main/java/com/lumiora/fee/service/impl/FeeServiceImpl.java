@@ -1,3 +1,4 @@
+
 package com.lumiora.fee.service.impl;
 
 import java.util.List;
@@ -33,11 +34,8 @@ public class FeeServiceImpl implements FeeService {
     }
 
     @Override
-    public List<FeeAccount> findAllByOrganizationId(
-            Long organizationId) {
-
-        return feeAccountRepository
-                .findAllByOrganization_Id(organizationId);
+    public List<FeeAccount> findAllByOrganizationId(Long organizationId) {
+        return feeAccountRepository.findAllByOrganization_Id(organizationId);
     }
 
     @Override
@@ -45,11 +43,10 @@ public class FeeServiceImpl implements FeeService {
             Long id,
             Long organizationId) {
 
-        return feeAccountRepository
-                .findByIdAndOrganization_Id(
-                        id,
-                        organizationId
-                );
+        return feeAccountRepository.findByIdAndOrganization_Id(
+                id,
+                organizationId
+        );
     }
 
     @Override
@@ -57,11 +54,10 @@ public class FeeServiceImpl implements FeeService {
             Long enrollmentId,
             Long organizationId) {
 
-        return feeAccountRepository
-                .existsByEnrollment_IdAndOrganization_Id(
-                        enrollmentId,
-                        organizationId
-                );
+        return feeAccountRepository.existsByEnrollment_IdAndOrganization_Id(
+                enrollmentId,
+                organizationId
+        );
     }
 
     @Override
@@ -69,10 +65,9 @@ public class FeeServiceImpl implements FeeService {
             Long enrollmentId,
             Long organizationId) {
 
-        return feeAccountRepository
-                .findByEnrollment_IdAndOrganization_Id(
-                        enrollmentId,
-                        organizationId
-                );
+        return feeAccountRepository.findByEnrollment_IdAndOrganization_Id(
+                enrollmentId,
+                organizationId
+        );
     }
 }

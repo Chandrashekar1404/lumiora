@@ -8,6 +8,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.lumiora.fee.entity.FeeAccount;
 
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.QueryHint;
+
+import org.springframework.data.jpa.repository.Query;
+
 public interface FeeAccountRepository
                 extends JpaRepository<FeeAccount, Long> {
 
@@ -75,4 +84,8 @@ public interface FeeAccountRepository
         List<FeeAccount> findAllByOrganization_IdAndEnrollment_Student_Id(
                         Long organizationId,
                         Long studentId);
+
+        @Lock(LockModeType.PESSIMISTIC_WRITE)
+        @Query("SELECT f FROM FeeAccount f WHERE f.id = :id")
+        Optional<FeeAccount> findByIdForUpdate(@Param("id") Long id);
 }

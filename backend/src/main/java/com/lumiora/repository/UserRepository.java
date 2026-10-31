@@ -1,3 +1,4 @@
+
 package com.lumiora.repository;
 
 import java.util.List;
@@ -15,18 +16,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByPhone(String phone);
 
-    List<User> findAllByOrganization_Id(
-            Long organizationId
-    );
+    List<User> findAllByOrganization_Id(Long organizationId);
 
     Optional<User> findByIdAndOrganization_Id(
             Long id,
             Long organizationId
     );
 
-    List<User> findAllByRole_Name(
-            String roleName
-    );
+    List<User> findAllByRole_Name(String roleName);
 
     List<User> findAllByOrganization_IdAndRole_Name(
             Long organizationId,
