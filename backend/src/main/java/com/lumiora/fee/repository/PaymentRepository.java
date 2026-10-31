@@ -1,4 +1,3 @@
-
 package com.lumiora.fee.repository;
 
 import java.util.List;
@@ -7,14 +6,14 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import jakarta.persistence.LockModeType;
 
 import com.lumiora.fee.entity.Payment;
 
-public interface PaymentRepository
-        extends JpaRepository<Payment, Long> {
+public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     @EntityGraph(attributePaths = {
             "organization",
@@ -54,10 +53,7 @@ public interface PaymentRepository
             "feeAccount.enrollment.batch",
             "feeAccount.enrollment.batch.course"
     })
-    Optional<Payment> findByIdAndOrganization_Id(
-            Long id,
-            Long organizationId
-    );
+    Optional<Payment> findByIdAndOrganization_Id(Long id, Long organizationId);
 
     @EntityGraph(attributePaths = {
             "organization",
@@ -73,5 +69,6 @@ public interface PaymentRepository
     );
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT p FROM Payment p WHERE p.id = :id")
     Optional<Payment> findByIdForUpdate(@Param("id") Long id);
 }
